@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { initIDB } from "@/lib/indexedDb";
 
 const LoginDialog = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -40,6 +41,10 @@ const LoginDialog = () => {
 
   useEffect(() => {
     const strong_password = genStrongPassword();
+
+    (async () => {
+      await initIDB();
+    })();
   }, []);
 
   return (
