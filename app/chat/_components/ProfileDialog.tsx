@@ -86,7 +86,7 @@ const ProfileDialog = () => {
                   <RefreshCcw className="text-primary/70 group-hover:text-primary" />
                 </button>
               </div>
-              <div className="text-muted-foreground w-[95%] flex items-center justify-center gap-x-2">
+              <div className="text-muted-foreground w-[95%] flex items-center gap-x-2">
                 <div>
                   <Info className="w-4 h-4" />
                 </div>

@@ -6,8 +6,7 @@
 
 body {
   font-family: "Inter", sans-serif;
-  color: hsl();
-  color: hsl(180, 6%, 97%);
+  color: hsl(var(--foreground));
 }
 
 @layer base {
@@ -23,7 +22,7 @@ body {
     --secondary: 171 43% 12%;
     --secondary-foreground: 180 6% 97%;
     --muted: 171 43% 12%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted-foreground: 171 8% 54%;
     --accent: 171 43% 12%;
     --accent-foreground: 180 6% 97%;
     --destructive: 0 63% 31%;

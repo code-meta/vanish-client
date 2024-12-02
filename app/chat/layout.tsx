@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ProfileDialog from "./_components/ProfileDialog";
+import LoginDialog from "./_components/LoginDialog";
 // import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{true ? <ProfileDialog /> : children}</body>
+      <body>
+        <LoginDialog />
+
+        {/* {true ? <ProfileDialog /> : children} */}
+      </body>
     </html>
   );
 }
