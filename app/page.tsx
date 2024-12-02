@@ -1,12 +1,17 @@
-import { Button } from '@/components/ui/button'
-import React from 'react'
+import { Button } from "@/components/ui/button";
+import React from "react";
 
-const Home = () => {
+const Landing = () => {
   return (
     <div>
-      <Button variant={'destructive'}>Fuck</Button>
+      <h1>Welcome to Vanish</h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil vel
+        dolorum sed omnis sapiente repudiandae aspernatur exercitationem tempore
+        aliquid soluta!
+      </p>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Landing;
