@@ -11,7 +11,7 @@ export default function useAccessProfile() {
   const [isOpen, setIsOpen] = useState(true);
 
   const [password, setPassword] = useState({
-    value: "g8gQJ#DYR46FwcGg",
+    value: "",
     error: "",
   });
 
@@ -28,7 +28,7 @@ export default function useAccessProfile() {
   const { genStrongPassword } = usePassword();
 
   useEffect(() => {
-    handleAccessProfile();
+    // handleAccessProfile();
   }, []);
 
   useEffect(() => {

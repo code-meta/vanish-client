@@ -5,10 +5,10 @@ import type { RootState } from "@/lib/store";
 interface userState {
   loading: boolean;
   user: {
-    id: string | null;
-    name: string | null;
-    publicKeyBase64: string | null;
-    privateKeyBase64: string | null;
+    id: string;
+    name: string;
+    publicKeyBase64: string;
+    privateKeyBase64: string;
   };
 }
 
@@ -18,10 +18,10 @@ type User = Omit<userState, "loading">["user"];
 const initialState: userState = {
   loading: true,
   user: {
-    id: null,
-    name: null,
-    publicKeyBase64: null,
-    privateKeyBase64: null,
+    id: "",
+    name: "",
+    publicKeyBase64: "",
+    privateKeyBase64: "",
   },
 };
 

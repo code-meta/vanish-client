@@ -1,14 +1,14 @@
 import { Input } from "@/components/ui/input";
+import useHandleConnection from "@/lib/hooks/useHandleConnection";
 import { Info } from "lucide-react";
 import React, { useState } from "react";
 
 const ExchangeKeyForm = () => {
-  const [foreignPublicKey, setForeignPublicKey] = useState({
-    value: "",
-    error: "",
-  });
+  const { foreignPublicKey, setForeignPublicKey, handlePublicKeyExchange } =
+    useHandleConnection();
+
   return (
-    <form>
+    <form onSubmit={handlePublicKeyExchange}>
       <div className="flex flex-col gap-y-2">
         <label htmlFor="publicKey" className="font-medium text-sm">
           Connect a Friend

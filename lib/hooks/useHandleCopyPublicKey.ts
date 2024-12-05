@@ -15,13 +15,12 @@ export default function useHandleCopyPublicKey() {
   const { toast } = useToast();
 
   async function genSharePublicKey() {
-    if (!user.name) return;
+    if (!user.id) return;
 
     const { base64Value: name } = await to_base64_for_string(user.name);
+    const { base64Value: id } = await to_base64_for_string(user.id);
 
-    setSharePublicKey(`${user.publicKeyBase64}.${name}`);
-
-    console.log(user.publicKeyBase64 + "." + name);
+    setSharePublicKey(`${user.publicKeyBase64}.${id}.${name}`);
   }
 
   function copySharePublicKey() {
