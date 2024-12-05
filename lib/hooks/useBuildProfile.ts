@@ -13,7 +13,7 @@ export default function useBuildProfile() {
   const [isOpen, setIsOpen] = useState(true);
 
   const [name, setName] = useState({
-    value: "John",
+    value: "",
     error: "",
   });
   const [password, setPassword] = useState({
@@ -45,7 +45,18 @@ export default function useBuildProfile() {
 
   async function handleCreateProfile() {
     if (name.value.trim() === "") {
-      setName((prev) => ({ ...prev, error: "Type a short name" }));
+      setName((prev) => ({
+        ...prev,
+        error: "We need a name to move forward. Please type one.",
+      }));
+      return;
+    }
+
+    if (name.value.trim().length <= 1) {
+      setName((prev) => ({
+        ...prev,
+        error: "Name too short. It needs to have at least 2 characters.",
+      }));
       return;
     }
 
