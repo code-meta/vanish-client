@@ -1,4 +1,3 @@
-// src/utils/indexedDB.ts
 import { openDB } from "idb";
 
 const DB_NAME = "appDatabase";
@@ -12,23 +11,24 @@ const initializeDB = async () => {
     upgrade(db) {
       if (!db.objectStoreNames.contains(OBJECT_STORE_NAME)) {
         const store = db.createObjectStore(OBJECT_STORE_NAME);
-        store.createIndex("key", "key"); // Create an index for querying by key
+        store.createIndex("key", "key");
       }
     },
   });
 };
 
 // Store a key-value pair
-export const setItem = async (key: string, value: any) => {
+export const storeItem = async (key: string, value: any) => {
   const db = await initializeDB();
   const tx = db.transaction(OBJECT_STORE_NAME, "readwrite");
   const store = tx.objectStore(OBJECT_STORE_NAME);
+  console.log(value, 'yxjlkfsdlkfds')
   await store.put(value, key);
   await tx.done;
 };
 
 // Get a value by key
-export const getItem = async (key: string) => {
+export const getStorageItem = async (key: string) => {
   const db = await initializeDB();
   const tx = db.transaction(OBJECT_STORE_NAME, "readonly");
   const store = tx.objectStore(OBJECT_STORE_NAME);
@@ -48,10 +48,10 @@ export const removeItem = async (key: string) => {
 
 export async function initIDB() {
   // Initialize the database
-  await setItem("theme", "blue");
+  await storeItem("theme", "blue");
 
-  const storedTheme = await getItem("theme");
-  const storedUserInfo = await getItem("userInfo");
+  const storedTheme = await getStorageItem("theme");
+  const storedUserInfo = await getStorageItem("userInfo");
 
-  console.log({ storedTheme });
+  console.log({ storedUserInfo });
 }

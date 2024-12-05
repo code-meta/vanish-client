@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import {
   Dialog,
@@ -8,35 +8,24 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import Brand from "@/components/shared/icons/Brand";
 import { Input } from "@/components/ui/input";
-
-import generator from "generate-password";
-import { Info, RefreshCcw } from "lucide-react";
+import { Copy, Info, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import useBuildProfile from "@/lib/hooks/useBuildProfile";
 
 const ProfileDialog = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-
-  function genStrongPassword() {
-    const strong_password = generator.generate({
-      length: 12,
-      numbers: true,
-      uppercase: true,
-      lowercase: true,
-      strict: true,
-    });
-    return strong_password;
-  }
-
-  useEffect(() => {
-    const strong_password = genStrongPassword();
-    setPassword(strong_password);
-  }, []);
+  const {
+    isOpen,
+    setIsOpen,
+    name,
+    setName,
+    password,
+    setPassword,
+    handleCreateProfile,
+    genStrongPassword,
+  } = useBuildProfile();
 
   return (
     <div>
@@ -64,27 +53,47 @@ const ProfileDialog = () => {
               <Input
                 placeholder="Type your pseudonym..."
                 id="name"
+                value={name.value}
+                onChange={(e) =>
+                  setName((prev) => ({ ...prev, value: e.target.value }))
+                }
                 autoComplete="off"
               />
+              {name.error && (
+                <p className="text-rose-600 font-medium">{name.error}</p>
+              )}
             </div>
             <div className="flex flex-col gap-y-2">
               <label htmlFor="password" className="font-medium text-sm">
                 Your Password
               </label>
               <div className="relative">
-                <Input
-                  id="password"
-                  placeholder="Type a very strong password"
-                  value={password}
-                  autoComplete="off"
-                  readOnly
-                />
-                <button
-                  className="absolute right-0 top-0 flex items-center justify-center w-10 h-full cursor-pointer group"
-                  onClick={() => setPassword(genStrongPassword())}
-                >
-                  <RefreshCcw className="text-primary/70 group-hover:text-primary" />
-                </button>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    placeholder="Type a very strong password"
+                    value={password.value}
+                    autoComplete="off"
+                    readOnly
+                  />
+                  <button
+                    className="absolute right-0 top-0 flex items-center justify-center w-10 h-full cursor-pointer group"
+                    onClick={() => {
+                      setPassword((prev) => ({
+                        ...prev,
+                        value: genStrongPassword(),
+                      }));
+                    }}
+                  >
+                    <RefreshCcw className="text-primary/70 group-hover:text-primary" />
+                  </button>
+                </div>
+
+                {password.error && (
+                  <p className="text-rose-600 font-medium mt-2">
+                    {password.error}
+                  </p>
+                )}
               </div>
               <div className="text-muted-foreground w-[95%] flex items-center gap-x-2">
                 <div>
@@ -99,7 +108,10 @@ const ProfileDialog = () => {
           </div>
 
           <div className="text-right">
-            <Button variant={"secondary"}>Continue</Button>
+            <Button variant={"secondary"} onClick={() => handleCreateProfile()}>
+              Copy and Continue
+              <Copy className="text-primary/70 group-hover:text-primary" />
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

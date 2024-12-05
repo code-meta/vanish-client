@@ -19,33 +19,26 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { initIDB } from "@/lib/indexedDb";
+import { initIDB } from "@/lib/db/indexedDb";
+import usePassword from "@/lib/hooks/usePassword";
+import useAccessProfile from "@/lib/hooks/useAccessProfile";
 
 const LoginDialog = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [newPassword, setNewPassword] = useState("");
-  const [updatePassword, setUpdatePassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [password, setPassword] = useState("");
-
-  function genStrongPassword() {
-    const strong_password = generator.generate({
-      length: 12,
-      numbers: true,
-      uppercase: true,
-      lowercase: true,
-      strict: true,
-    });
-    return strong_password;
-  }
-
-  useEffect(() => {
-    const strong_password = genStrongPassword();
-
-    (async () => {
-      await initIDB();
-    })();
-  }, []);
+  const {
+    isOpen,
+    setIsOpen,
+    password,
+    setPassword,
+    showNewPassword,
+    setShowNewPassword,
+    updatePassword,
+    setUpdatePassword,
+    newPassword,
+    setNewPassword,
+    handleAccessProfile,
+    genStrongPassword,
+    handleCopyUpdatedPassword,
+  } = useAccessProfile();
 
   return (
     <div>
@@ -78,10 +71,20 @@ const LoginDialog = () => {
                     <Input
                       id="password"
                       placeholder="Enter the password here"
-                      value={password}
+                      value={password.value}
                       autoComplete="off"
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) =>
+                        setPassword((prev) => ({
+                          ...prev,
+                          value: e.target.value,
+                        }))
+                      }
                     />
+                    {password.error && (
+                      <p className="text-rose-600 font-medium mt-2">
+                        {password.error}
+                      </p>
+                    )}
                   </div>
                   <div className="text-muted-foreground w-[95%] flex items-center gap-x-2">
                     <div>
@@ -113,10 +116,7 @@ const LoginDialog = () => {
               <div className="text-right">
                 <Button
                   variant={"secondary"}
-                  onClick={() => {
-                    setNewPassword(genStrongPassword());
-                    setShowNewPassword(true);
-                  }}
+                  onClick={() => handleAccessProfile()}
                 >
                   Continue
                 </Button>
@@ -141,7 +141,10 @@ const LoginDialog = () => {
                 </div>
               </div>
               <div className="text-right">
-                <Button variant={"secondary"}>
+                <Button
+                  variant={"secondary"}
+                  onClick={() => handleCopyUpdatedPassword()}
+                >
                   Copy
                   <Copy className="text-primary/70 hover:text-primary cursor-pointer" />
                 </Button>
