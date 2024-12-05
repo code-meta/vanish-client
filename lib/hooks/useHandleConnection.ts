@@ -1,9 +1,13 @@
 import { FormEvent, useState } from "react";
 import { create_new_connection, encryptData } from "../crypto";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { updateConnections } from "../features/user/userSlice";
+import {
+  removeConnection,
+  updateConnections,
+} from "../features/user/userSlice";
 import { getStorageItem, storeItem } from "../db/indexedDb";
 import { useToast } from "@/hooks/use-toast";
+import { Connection } from "../types";
 
 export default function useHandleConnection() {
   const [foreignPublicKey, setForeignPublicKey] = useState({
@@ -17,6 +21,36 @@ export default function useHandleConnection() {
   const connections = useAppSelector((state) => state.user.connections);
 
   const dispatch = useAppDispatch();
+
+  async function saveConnections(newConnection: Connection) {
+    const storedConnections = await getStorageItem("connections");
+
+    if (!storedConnections) {
+      const encryptedConnections = await encryptData(
+        [newConnection],
+        user.privateKeyBase64
+      );
+      await storeItem("connections", JSON.stringify(encryptedConnections));
+    } else {
+      const encryptedConnections = await encryptData(
+        [...connections, newConnection],
+        user.privateKeyBase64
+      );
+      await storeItem("connections", JSON.stringify(encryptedConnections));
+    }
+  }
+
+  async function updateStoredConnection(updatedConnections: Connection[]) {
+    const storedConnections = await getStorageItem("connections");
+
+    if (storedConnections) {
+      const encryptedConnections = await encryptData(
+        [...updatedConnections],
+        user.privateKeyBase64
+      );
+      await storeItem("connections", JSON.stringify(encryptedConnections));
+    }
+  }
 
   async function handlePublicKeyExchange(e: FormEvent) {
     if (!user.privateKeyBase64) return;
@@ -69,21 +103,7 @@ export default function useHandleConnection() {
         return;
       }
 
-      const storedConnections = await getStorageItem("connections");
-
-      if (!storedConnections) {
-        const encryptedConnections = await encryptData(
-          [newConnection],
-          user.privateKeyBase64
-        );
-        await storeItem("connections", JSON.stringify(encryptedConnections));
-      } else {
-        const encryptedConnections = await encryptData(
-          [...connections, newConnection],
-          user.privateKeyBase64
-        );
-        await storeItem("connections", JSON.stringify(encryptedConnections));
-      }
+      saveConnections(newConnection);
 
       dispatch(updateConnections(newConnection));
 
@@ -102,5 +122,20 @@ export default function useHandleConnection() {
     }
   }
 
-  return { handlePublicKeyExchange, foreignPublicKey, setForeignPublicKey };
+  async function handleRemoveConnection(id: string) {
+    dispatch(removeConnection(id));
+
+    const updatedConnections = [...connections].filter(
+      (item) => item.id !== id
+    );
+    
+    updateStoredConnection([...updatedConnections]);
+  }
+
+  return {
+    handlePublicKeyExchange,
+    foreignPublicKey,
+    setForeignPublicKey,
+    handleRemoveConnection,
+  };
 }

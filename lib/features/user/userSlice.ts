@@ -48,11 +48,24 @@ export const userSlice = createSlice({
     updateConnections: (state, action: PayloadAction<Connection>) => {
       state.connections.push(action.payload);
     },
+
+    removeConnection: (state, action: PayloadAction<string>) => {
+      const connections = state.connections.filter(
+        (item) => item.id !== item.id
+      );
+
+      state.connections = [...connections];
+    },
   },
 });
 
-export const { loadUser, updateLoading, setConnections, updateConnections } =
-  userSlice.actions;
+export const {
+  loadUser,
+  updateLoading,
+  setConnections,
+  updateConnections,
+  removeConnection,
+} = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 

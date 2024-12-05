@@ -31,16 +31,6 @@ export default function useCreateNewRoom() {
   }, [roomName.value]);
 
   async function handleCreateRoom() {
-    // if ("error" in encryptUserData) {
-    //   toast({
-    //     title: "Unexpected Error",
-    //     description: "Something went wrong, please refresh the page.",
-    //     variant: "destructive",
-    //   });
-
-    //   return;
-    // }
-
     setIsOpen(false);
 
     toast({
