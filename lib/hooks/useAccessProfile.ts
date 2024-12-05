@@ -1,10 +1,14 @@
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { decryptData, encryptData } from "../crypto";
-import { getStorageItem, storeItem } from "../db/indexedDb";
+import { getStorageItem, removeItem, storeItem } from "../db/indexedDb";
 import { copyToClipboard } from "../utils";
 import usePassword from "./usePassword";
-import { loadUser, updateLoading } from "../features/user/userSlice";
+import {
+  loadUser,
+  setConnections,
+  updateLoading,
+} from "../features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
 
 export default function useAccessProfile() {
@@ -37,32 +41,59 @@ export default function useAccessProfile() {
   }, [password.value]);
 
   async function handleAccessProfile() {
-    if (password.value.trim() === "") {
-      setPassword((prev) => ({
-        ...prev,
-        error: "Please enter the Password",
-      }));
-      return;
+    try {
+      if (password.value.trim() === "") {
+        setPassword((prev) => ({
+          ...prev,
+          error: "Please enter the Password",
+        }));
+        return;
+      }
+
+      let userInfo;
+      let connections;
+
+      const encryptedUserInfo = await getStorageItem("userInfo");
+      const encryptedConnections = await getStorageItem("connections");
+
+      if (encryptedUserInfo) {
+        userInfo = await decryptData(encryptedUserInfo, password.value);
+      }
+
+      if (!userInfo) {
+        await removeItem("userInfo");
+      }
+
+      if (encryptedConnections) {
+        connections = await decryptData(
+          encryptedConnections,
+          userInfo.privateKeyBase64
+        );
+      }
+
+      connections && dispatch(setConnections([...connections]));
+
+      userInfo && dispatch(loadUser({ ...userInfo }));
+
+      dispatch(updateLoading(false));
+
+      if (updatePassword) {
+        setNewPassword(genStrongPassword());
+        setShowNewPassword(true);
+        return;
+      }
+
+      setIsOpen(false);
+
+      toast({
+        title: "Welcome to the safe space",
+      });
+    } catch (error) {
+      toast({
+        title: "Something went wrong, please refresh the page.",
+        variant: "destructive",
+      });
     }
-
-    const encryptUserInfo = await getStorageItem("userInfo");
-
-    const userInfo = await decryptData(encryptUserInfo, password.value);
-
-    dispatch(loadUser({ ...userInfo }));
-    dispatch(updateLoading(false));
-
-    if (updatePassword) {
-      setNewPassword(genStrongPassword());
-      setShowNewPassword(true);
-      return;
-    }
-
-    setIsOpen(false);
-
-    toast({
-      title: "Welcome to the safe space",
-    });
   }
 
   async function handleCopyUpdatedPassword() {

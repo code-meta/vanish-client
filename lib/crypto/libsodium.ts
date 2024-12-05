@@ -42,11 +42,11 @@ export async function create_new_connection(
 
   const randomString2 = sodium.crypto_generichash(32, randomString1);
 
-  const one_to_one_room_id = sodium.to_base64(randomString1); // ! one to one room id
-  const one_to_one_message_secret = sodium.to_base64(randomString2); // ! message secret
+  const one_to_one_room_id = sodium.to_base64(randomString1);
+  const one_to_one_message_secret = sodium.to_base64(randomString2);
 
-  const connection_id = sodium.to_string(sodium.from_base64(nameBase64));
-  const connection_name = sodium.to_string(sodium.from_base64(idBase64));
+  const connection_id = sodium.to_string(sodium.from_base64(idBase64));
+  const connection_name = sodium.to_string(sodium.from_base64(nameBase64));
 
   const sharedSecretBase64 = sodium.to_base64(sharedSecret);
 
@@ -54,6 +54,7 @@ export async function create_new_connection(
     id: connection_id,
     name: connection_name,
     sharedSecretBase64,
+    public_key: otherPublicKey,
     one_to_one_room_id,
     one_to_one_message_secret,
   };

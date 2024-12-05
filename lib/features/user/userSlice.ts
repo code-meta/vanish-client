@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/lib/store";
+import { Connection } from "@/lib/types";
 
 interface userState {
   loading: boolean;
@@ -10,6 +11,8 @@ interface userState {
     publicKeyBase64: string;
     privateKeyBase64: string;
   };
+
+  connections: Connection[];
 }
 
 type User = Omit<userState, "loading">["user"];
@@ -23,6 +26,7 @@ const initialState: userState = {
     publicKeyBase64: "",
     privateKeyBase64: "",
   },
+  connections: [],
 };
 
 export const userSlice = createSlice({
@@ -32,13 +36,23 @@ export const userSlice = createSlice({
     loadUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
+
     updateLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
+    },
+
+    setConnections: (state, action: PayloadAction<Connection[]>) => {
+      state.connections = [...action.payload];
+    },
+
+    updateConnections: (state, action: PayloadAction<Connection>) => {
+      state.connections.push(action.payload);
     },
   },
 });
 
-export const { loadUser, updateLoading } = userSlice.actions;
+export const { loadUser, updateLoading, setConnections, updateConnections } =
+  userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 

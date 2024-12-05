@@ -1,7 +1,8 @@
-import generator from "generate-password";
 import { FormEvent, useState } from "react";
-import { create_new_connection } from "../crypto";
-import { useAppSelector } from "../hooks";
+import { create_new_connection, encryptData } from "../crypto";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { updateConnections } from "../features/user/userSlice";
+import { getStorageItem, storeItem } from "../db/indexedDb";
 
 export default function useHandleConnection() {
   const [foreignPublicKey, setForeignPublicKey] = useState({
@@ -10,8 +11,9 @@ export default function useHandleConnection() {
   });
 
   const user = useAppSelector((state) => state.user.user);
+  const connections = useAppSelector((state) => state.user.connections);
 
-  function addConnectionWithPublicKey() {}
+  const dispatch = useAppDispatch();
 
   async function handlePublicKeyExchange(e: FormEvent) {
     if (!user.privateKeyBase64) return;
@@ -52,8 +54,23 @@ export default function useHandleConnection() {
         user.privateKeyBase64
       );
 
-      console.log("done.....");
-      console.log(newConnection);
+      const storedConnections = await getStorageItem("connections");
+
+      if (!storedConnections) {
+        const encryptedConnections = await encryptData(
+          [newConnection],
+          user.privateKeyBase64
+        );
+        await storeItem("connections", JSON.stringify(encryptedConnections));
+      } else {
+        const encryptedConnections = await encryptData(
+          [...connections, newConnection],
+          user.privateKeyBase64
+        );
+        await storeItem("connections", JSON.stringify(encryptedConnections));
+      }
+
+      dispatch(updateConnections(newConnection));
     } catch (error) {
       setForeignPublicKey({
         value: "",
