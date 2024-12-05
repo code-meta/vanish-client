@@ -32,10 +32,6 @@ export default function useAccessProfile() {
   const { genStrongPassword } = usePassword();
 
   useEffect(() => {
-    // handleAccessProfile();
-  }, []);
-
-  useEffect(() => {
     if (password.value.trim() !== "")
       setPassword((prev) => ({ ...prev, error: "" }));
   }, [password.value]);

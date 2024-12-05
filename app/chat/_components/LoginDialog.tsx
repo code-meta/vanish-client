@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import {
   Dialog,
@@ -8,19 +8,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import Brand from "@/components/shared/icons/Brand";
 import { Input } from "@/components/ui/input";
 
-import generator from "generate-password";
-import { Copy, Info, RefreshCcw } from "lucide-react";
+import { Copy, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { initIDB } from "@/lib/db/indexedDb";
-import usePassword from "@/lib/hooks/usePassword";
 import useAccessProfile from "@/lib/hooks/useAccessProfile";
 
 const LoginDialog = () => {
@@ -30,13 +26,10 @@ const LoginDialog = () => {
     password,
     setPassword,
     showNewPassword,
-    setShowNewPassword,
     updatePassword,
     setUpdatePassword,
     newPassword,
-    setNewPassword,
     handleAccessProfile,
-    genStrongPassword,
     handleCopyUpdatedPassword,
   } = useAccessProfile();
 

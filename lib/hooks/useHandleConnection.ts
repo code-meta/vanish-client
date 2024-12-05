@@ -3,12 +3,15 @@ import { create_new_connection, encryptData } from "../crypto";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { updateConnections } from "../features/user/userSlice";
 import { getStorageItem, storeItem } from "../db/indexedDb";
+import { useToast } from "@/hooks/use-toast";
 
 export default function useHandleConnection() {
   const [foreignPublicKey, setForeignPublicKey] = useState({
     value: "",
     error: "",
   });
+
+  const { toast } = useToast();
 
   const user = useAppSelector((state) => state.user.user);
   const connections = useAppSelector((state) => state.user.connections);
@@ -54,6 +57,18 @@ export default function useHandleConnection() {
         user.privateKeyBase64
       );
 
+      const exists = connections.some((item) => item.id === newConnection.id);
+
+      if (exists) {
+        toast({
+          title: `${newConnection.name} is already Added`,
+        });
+
+        setForeignPublicKey({ value: "", error: "" });
+
+        return;
+      }
+
       const storedConnections = await getStorageItem("connections");
 
       if (!storedConnections) {
@@ -71,6 +86,13 @@ export default function useHandleConnection() {
       }
 
       dispatch(updateConnections(newConnection));
+
+      setForeignPublicKey({ value: "", error: "" });
+
+      toast({
+        title: `${newConnection.name} is Added`,
+        description: `You can start messaging!`,
+      });
     } catch (error) {
       setForeignPublicKey({
         value: "",

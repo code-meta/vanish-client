@@ -7,6 +7,7 @@ import ExchangeSection from "./ExchangeSection";
 import ConnectedProfiles from "./ConnectedProfiles";
 import PersonalChatRooms from "./PersonalChatRooms";
 import JoinedChatRooms from "./JoinedChatRooms";
+import CreateRoomDialog from "./CreateRoomDialog";
 
 const MainContent = () => {
   const loading = useAppSelector((state) => state.user.loading);

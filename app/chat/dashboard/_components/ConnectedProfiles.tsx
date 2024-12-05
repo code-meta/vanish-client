@@ -16,7 +16,7 @@ const ConnectedProfiles = () => {
           <InfoMessageText text="Looks like your friend list is empty. Start connecting!" />
         )}
 
-        {connections.length && (
+        {connections.length >= 1 && (
           <>
             <InfoMessageText text="Tap on a card to start a private chat" />
 
