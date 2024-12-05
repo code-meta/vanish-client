@@ -1,6 +1,6 @@
 export { encryptData, decryptData, deriveKey } from "./web_crypto";
 
-export { gen_crypto_box_keypair } from "./libsodium";
+export { gen_crypto_box_keypair, to_base64_for_string } from "./libsodium";
 
 (async () => {
   const key = "myEncryptedData";

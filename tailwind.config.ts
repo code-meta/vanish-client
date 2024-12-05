@@ -60,6 +60,7 @@ export default {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
         roboto: ["Roboto", "sans-serif"],
+        code: ["Courier New", "sans-serif"],
       },
     },
   },

@@ -12,6 +12,15 @@ export async function gen_crypto_box_keypair() {
   return { publicKeyBase64, privateKeyBase64 };
 }
 
+export async function to_base64_for_string(value: string) {
+  await _sodium.ready;
+  const sodium = _sodium;
+
+  const base64Value = sodium.to_base64(sodium.from_string(value));
+
+  return { base64Value };
+}
+
 /*
 
 
