@@ -8,7 +8,7 @@ const ExchangeSection = () => {
   return (
     <div className="mt-12">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-y-8 lg:gap-y-0">
-        <div className="w-[400px]">
+        <div className="w-full lg:w-[400px]">
           <ExchangeKeyForm />
         </div>
         <CopyPublicKey />
