@@ -89,7 +89,7 @@ export default function useBuildProfile() {
     if ("error" in encryptUserData || "error" in encryptProfileData) {
       toast({
         title: "Unexpected Error",
-        description: "Something went wrong, please refresh the page.",
+        description: "An unexpected error occurred. Please refresh the page and try again.",
         variant: "destructive",
       });
 

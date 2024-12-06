@@ -26,7 +26,7 @@ export const measureTextWidth = (text: string) => {
   span.style.display = "inline-block";
   span.style.width = "max-content";
   span.style.fontSize = "14px";
-  span.textContent = text.trim();
+  span.textContent = text;
   document.body.appendChild(span);
   const textWidth = span.offsetWidth;
   document.body.removeChild(span);

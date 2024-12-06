@@ -94,7 +94,7 @@ export default function useAccessProfile() {
       });
     } catch (error) {
       toast({
-        title: "Something went wrong, please refresh the page.",
+        title: "An unexpected error occurred. Please refresh the page and try again.",
         variant: "destructive",
       });
     }
@@ -108,7 +108,7 @@ export default function useAccessProfile() {
     if ("error" in encryptUserData) {
       toast({
         title: "Unexpected Error",
-        description: "Something went wrong, please refresh the page.",
+        description: "An unexpected error occurred. Please refresh the page and try again.",
         variant: "destructive",
       });
 
