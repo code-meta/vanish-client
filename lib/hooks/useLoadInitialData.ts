@@ -1,4 +1,3 @@
-import generator from "generate-password";
 import { getStorageItem } from "../db/indexedDb";
 import { useEffect, useState } from "react";
 

@@ -1,4 +1,3 @@
-import generator from "generate-password";
 import { useAppSelector } from "../hooks";
 import { to_base64_for_string } from "../crypto";
 import { useEffect, useState } from "react";

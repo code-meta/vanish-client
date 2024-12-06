@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { measureTextWidth } from "../utils";
 import { useToast } from "@/hooks/use-toast";
