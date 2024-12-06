@@ -13,23 +13,28 @@ export default function useHandleNameEdit() {
     const span = document.createElement("span");
     span.style.visibility = "hidden";
     span.style.whiteSpace = "nowrap";
+    span.style.color = "white";
     span.style.font = "inherit";
-    span.textContent = text;
+    span.style.display = "inline-block";
+    span.style.width = "max-content";
+    span.style.fontSize = "14px";
+    span.textContent = text.trim();
     document.body.appendChild(span);
     const textWidth = span.offsetWidth;
     document.body.removeChild(span);
+
     return textWidth;
   };
 
   useEffect(() => {
-    setWidth(measureTextWidth(name) + 4);
+    setWidth(measureTextWidth(name));
   }, [name]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
 
     const textWidth = measureTextWidth(e.target.value);
-    setWidth(textWidth + 4);
+    setWidth(textWidth);
   };
 
   function updateName() {}

@@ -15,12 +15,12 @@ const TopHeader = () => {
   return (
     <div className="flex items-center justify-between py-4">
       <Brand />
-      <div className="flex items-center gap-x-1.5 text-muted-foreground">
+      <div className="flex items-center gap-x-4 text-muted-foreground">
         <Input
           ref={inputRef}
-          style={{ width: `${width}px` }}
+          style={{ width: `${width + (readOnly ? 0 : 10)}px` }}
           className={cn(
-            "font-medium font-roboto !p-0 h-max rounded-none outline-none border-transparent focus-visible:ring-0 focus-visible:border-b-primary disabled:cursor-text disabled:!opacity-100"
+            `font-medium font-roboto !p-0 h-max rounded-none outline-none border-transparent focus-visible:ring-0 focus-visible:border-b-primary disabled:cursor-text disabled:!opacity-100`
           )}
           value={name}
           readOnly={readOnly}
