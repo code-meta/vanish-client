@@ -22,7 +22,10 @@ const ConnectedProfiles = () => {
 
             <div className="flex flex-wrap gap-4 mt-3">
               {connections.map((item) => (
-                <div key={item.id}>
+                <div
+                  key={item.id}
+                  className="flex-grow md:flex-grow-0 min-w-[280px]"
+                >
                   <ConnectionCard {...item} />
                 </div>
               ))}

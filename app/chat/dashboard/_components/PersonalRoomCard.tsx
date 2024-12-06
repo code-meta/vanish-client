@@ -14,18 +14,17 @@ const PersonalRoomCard = (props: PersonalRoom) => {
 
   return (
     <>
-      <WarningDialog
-        continueText="Remove"
-        alertOpen={alertOpen}
-        setAlertOpen={setAlertOpen}
-        nextFunction={() => {
-          handleRemovePersonalRoom(props.id);
-        }}
-        title="Are you sure?"
-        description="You’re about to remove this room. Do you wish to go ahead?"
-      />
-
-      <div className="bg-card w-[280px] h-28 px-3 py-2 rounded-lg border-2 border-border flex flex-col cursor-pointer hover:border-primary/70 transition-all group">
+      <div className="bg-card h-28 px-3 py-2 rounded-lg border-2 border-border flex flex-col cursor-pointer hover:border-primary/70 transition-all group">
+        <WarningDialog
+          continueText="Remove"
+          alertOpen={alertOpen}
+          setAlertOpen={setAlertOpen}
+          nextFunction={() => {
+            handleRemovePersonalRoom(props.id);
+          }}
+          title="Are you sure?"
+          description="You’re about to remove this room. Do you wish to go ahead?"
+        />
         <div className="flex items-center justify-between">
           <span className="font-roboto font-medium">{props.roomName}</span>
           <Trash
