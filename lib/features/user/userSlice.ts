@@ -63,6 +63,14 @@ export const userSlice = createSlice({
     setPersonalRooms: (state, action: PayloadAction<PersonalRoom[]>) => {
       state.personalRooms = [...action.payload];
     },
+
+    removePersonalRooms: (state, action: PayloadAction<string>) => {
+      const personalRooms = state.personalRooms.filter(
+        (item) => item.id !== action.payload
+      );
+
+      state.personalRooms = [...personalRooms];
+    },
   },
 });
 
@@ -73,6 +81,7 @@ export const {
   updateConnections,
   removeConnection,
   setPersonalRooms,
+  removePersonalRooms,
 } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;

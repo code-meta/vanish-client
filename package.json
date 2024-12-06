@@ -12,7 +12,12 @@
     "@eslint/config-array": "^0.19.0",
     "@eslint/object-schema": "^2.1.4",
     "@radix-ui/react-alert-dialog": "^1.1.2",
+    "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-dropdown-menu": "^2.1.2",
+    "@radix-ui/react-scroll-area": "^1.2.1",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.2",
@@ -32,7 +37,8 @@
     "rimraf": "^6.0.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "ulid": "^2.3.0"
+    "ulid": "^2.3.0",
+    "vaul": "^1.1.1"
   },
   "devDependencies": {
     "@types/libsodium-wrappers": "^0.7.14",

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import useCreateNewRoom from "@/lib/hooks/useCreateNewRoom";
 import CreateRoomDialog from "./CreateRoomDialog";
 import { useAppSelector } from "@/lib/hooks";
+import PersonalRoomCard from "./PersonalRoomCard";
 
 const PersonalChatRooms = () => {
   const personalRooms = useAppSelector((state) => state.user.personalRooms);
@@ -14,13 +15,24 @@ const PersonalChatRooms = () => {
 
       <div className="mt-4">
         <CreateRoomDialog />
-        <div className="mt-2">
-          <InfoMessageText text="No chat rooms yet—start a new one!" />
 
-          {personalRooms.map((item) => (
-            <div key={item.id}>{item.roomName}</div>
-          ))}
-        </div>
+        {personalRooms.length <= 0 && (
+          <div className="mt-2">
+            <InfoMessageText text="No chat rooms yet—start a new one!" />
+          </div>
+        )}
+
+        {personalRooms.length >= 1 && (
+          <div className="mt-2">
+            <div className="flex flex-wrap gap-4 mt-3">
+              {personalRooms.map((item) => (
+                <div key={item.id}>
+                  <PersonalRoomCard {...item} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

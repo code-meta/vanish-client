@@ -22,7 +22,6 @@ export const storeItem = async (key: string, value: any) => {
   const db = await initializeDB();
   const tx = db.transaction(OBJECT_STORE_NAME, "readwrite");
   const store = tx.objectStore(OBJECT_STORE_NAME);
-  console.log(value, 'yxjlkfsdlkfds')
   await store.put(value, key);
   await tx.done;
 };
