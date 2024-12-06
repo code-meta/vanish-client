@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/lib/store";
-import { Connection } from "@/lib/types";
+import { Connection, PersonalRoom } from "@/lib/types";
 
 interface userState {
   loading: boolean;
@@ -13,6 +13,8 @@ interface userState {
   };
 
   connections: Connection[];
+
+  personalRooms: PersonalRoom[];
 }
 
 type User = Omit<userState, "loading">["user"];
@@ -27,6 +29,7 @@ const initialState: userState = {
     privateKeyBase64: "",
   },
   connections: [],
+  personalRooms: [],
 };
 
 export const userSlice = createSlice({
@@ -56,6 +59,10 @@ export const userSlice = createSlice({
 
       state.connections = [...connections];
     },
+
+    setPersonalRooms: (state, action: PayloadAction<PersonalRoom[]>) => {
+      state.personalRooms = [...action.payload];
+    },
   },
 });
 
@@ -65,6 +72,7 @@ export const {
   setConnections,
   updateConnections,
   removeConnection,
+  setPersonalRooms,
 } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;

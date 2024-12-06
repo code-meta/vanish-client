@@ -7,6 +7,7 @@ import usePassword from "./usePassword";
 import {
   loadUser,
   setConnections,
+  setPersonalRooms,
   updateLoading,
 } from "../features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -49,10 +50,12 @@ export default function useAccessProfile() {
       let userInfo;
       let profileInfo;
       let connections;
+      let personalRooms;
 
       const encryptedUserInfo = await getStorageItem("userInfo");
       const encryptedProfileInfo = await getStorageItem("profileInfo");
       const encryptedConnections = await getStorageItem("connections");
+      const encryptedPersonalRooms = await getStorageItem("personalRooms");
 
       if (encryptedUserInfo && encryptedProfileInfo) {
         userInfo = await decryptData(encryptedUserInfo, password.value);
@@ -75,7 +78,16 @@ export default function useAccessProfile() {
         );
       }
 
+      if (encryptedPersonalRooms) {
+        personalRooms = await decryptData(
+          encryptedPersonalRooms,
+          userInfo.privateKeyBase64
+        );
+      }
+
       connections && dispatch(setConnections([...connections]));
+
+      personalRooms && dispatch(setPersonalRooms([...personalRooms]));
 
       userInfo && dispatch(loadUser({ ...userInfo, ...profileInfo }));
 
@@ -94,7 +106,8 @@ export default function useAccessProfile() {
       });
     } catch (error) {
       toast({
-        title: "An unexpected error occurred. Please refresh the page and try again.",
+        title:
+          "An unexpected error occurred. Please refresh the page and try again.",
         variant: "destructive",
       });
     }
@@ -108,7 +121,8 @@ export default function useAccessProfile() {
     if ("error" in encryptUserData) {
       toast({
         title: "Unexpected Error",
-        description: "An unexpected error occurred. Please refresh the page and try again.",
+        description:
+          "An unexpected error occurred. Please refresh the page and try again.",
         variant: "destructive",
       });
 

@@ -62,6 +62,17 @@ export async function create_new_connection(
   return { newConnection };
 }
 
+export async function genRandomKey() {
+  await _sodium.ready;
+  const sodium = _sodium;
+
+  const randomKey = sodium.randombytes_buf(32);
+
+  const randomString1 = sodium.crypto_generichash(32, randomKey);
+
+  return sodium.to_base64(randomString1);
+}
+
 /*
 
 

@@ -4,6 +4,7 @@ export {
   gen_crypto_box_keypair,
   to_base64_for_string,
   create_new_connection,
+  genRandomKey,
 } from "./libsodium";
 
 (async () => {
