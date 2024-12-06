@@ -54,7 +54,7 @@ export const userSlice = createSlice({
 
     removeConnection: (state, action: PayloadAction<string>) => {
       const connections = state.connections.filter(
-        (item) => item.id !== item.id
+        (item) => item.id !== action.payload
       );
 
       state.connections = [...connections];
