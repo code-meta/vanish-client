@@ -36,7 +36,7 @@ export default function useHandleCopyPublicKey() {
     (async () => {
       genSharePublicKey();
     })();
-  }, []);
+  }, [user.name]);
 
   return { sharePublicKey, copySharePublicKey };
 }
