@@ -72,13 +72,21 @@ export default function useBuildProfile() {
 
     const newUser = {
       id: ulid(),
-      name: name.value,
       ...keys,
+    };
+
+    const newProfile = {
+      name: name.value,
     };
 
     const encryptUserData = await encryptData(newUser, password.value);
 
-    if ("error" in encryptUserData) {
+    const encryptProfileData = await encryptData(
+      newProfile,
+      newUser.privateKeyBase64
+    );
+
+    if ("error" in encryptUserData || "error" in encryptProfileData) {
       toast({
         title: "Unexpected Error",
         description: "Something went wrong, please refresh the page.",
@@ -89,10 +97,11 @@ export default function useBuildProfile() {
     }
 
     await storeItem("userInfo", JSON.stringify(encryptUserData));
+    await storeItem("profileInfo", JSON.stringify(encryptProfileData));
 
     copyToClipboard(password.value);
 
-    dispatch(loadUser({ ...newUser }));
+    dispatch(loadUser({ ...newUser, ...newProfile }));
     dispatch(updateLoading(false));
 
     setIsOpen(false);

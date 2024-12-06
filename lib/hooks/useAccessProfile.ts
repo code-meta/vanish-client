@@ -47,17 +47,25 @@ export default function useAccessProfile() {
       }
 
       let userInfo;
+      let profileInfo;
       let connections;
 
       const encryptedUserInfo = await getStorageItem("userInfo");
+      const encryptedProfileInfo = await getStorageItem("profileInfo");
       const encryptedConnections = await getStorageItem("connections");
 
-      if (encryptedUserInfo) {
+      if (encryptedUserInfo && encryptedProfileInfo) {
         userInfo = await decryptData(encryptedUserInfo, password.value);
+
+        profileInfo = await decryptData(
+          encryptedProfileInfo,
+          userInfo.privateKeyBase64
+        );
       }
 
       if (!userInfo) {
         await removeItem("userInfo");
+        await removeItem("profileInfo");
       }
 
       if (encryptedConnections) {
@@ -69,7 +77,7 @@ export default function useAccessProfile() {
 
       connections && dispatch(setConnections([...connections]));
 
-      userInfo && dispatch(loadUser({ ...userInfo }));
+      userInfo && dispatch(loadUser({ ...userInfo, ...profileInfo }));
 
       dispatch(updateLoading(false));
 

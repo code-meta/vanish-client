@@ -15,3 +15,21 @@ export function copyToClipboard(value: string) {
       console.error("Failed to copy text: ", err);
     });
 }
+
+
+export const measureTextWidth = (text: string) => {
+  const span = document.createElement("span");
+  span.style.visibility = "hidden";
+  span.style.whiteSpace = "nowrap";
+  span.style.color = "white";
+  span.style.font = "inherit";
+  span.style.display = "inline-block";
+  span.style.width = "max-content";
+  span.style.fontSize = "14px";
+  span.textContent = text.trim();
+  document.body.appendChild(span);
+  const textWidth = span.offsetWidth;
+  document.body.removeChild(span);
+
+  return textWidth;
+};

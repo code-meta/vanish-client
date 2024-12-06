@@ -1,43 +1,67 @@
-import { useEffect, useState } from "react";
-import { useAppSelector } from "../hooks";
+import { useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { measureTextWidth } from "../utils";
+import { useToast } from "@/hooks/use-toast";
+import { loadUser } from "../features/user/userSlice";
 
 export default function useHandleNameEdit() {
   const user = useAppSelector((state) => state.user.user);
 
+  const dispatch = useAppDispatch();
+
+  const { toast } = useToast();
+
   const [name, setName] = useState(user.name);
+
   const [readOnly, setReadOnly] = useState(true);
 
   const [width, setWidth] = useState(0);
-
-  const measureTextWidth = (text: string) => {
-    const span = document.createElement("span");
-    span.style.visibility = "hidden";
-    span.style.whiteSpace = "nowrap";
-    span.style.color = "white";
-    span.style.font = "inherit";
-    span.style.display = "inline-block";
-    span.style.width = "max-content";
-    span.style.fontSize = "14px";
-    span.textContent = text.trim();
-    document.body.appendChild(span);
-    const textWidth = span.offsetWidth;
-    document.body.removeChild(span);
-
-    return textWidth;
-  };
 
   useEffect(() => {
     setWidth(measureTextWidth(name));
   }, [name]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+  function updateName() {
+    dispatch(loadUser({ ...user, name }));
+  }
 
-    const textWidth = measureTextWidth(e.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    setName(value);
+
+    const textWidth = measureTextWidth(value);
+
     setWidth(textWidth);
+
+    if (value.trim() === "" || value.trim().length <= 1) {
+      toast({
+        title: "Name too short. It needs to have at least 2 characters.",
+        variant: "destructive",
+      });
+
+      return;
+    }
+
+    updateName();
   };
 
-  function updateName() {}
+  function handleOnBlur() {
+    setReadOnly(true);
 
-  return { name, handleChange, width, readOnly, setReadOnly };
+    if (name.trim() === "" || name.trim().length <= 1) {
+      setName(user.name);
+    }
+  }
+
+  return {
+    name,
+    setName,
+    handleChange,
+    handleOnBlur,
+    width,
+    readOnly,
+    setReadOnly,
+    user,
+  };
 }

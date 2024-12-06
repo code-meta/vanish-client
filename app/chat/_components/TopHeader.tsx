@@ -7,7 +7,7 @@ import { Pencil } from "lucide-react";
 import React, { useRef, useState } from "react";
 
 const TopHeader = () => {
-  const { name, handleChange, width, readOnly, setReadOnly } =
+  const { name, handleChange, width, readOnly, setReadOnly, handleOnBlur } =
     useHandleNameEdit();
 
   const inputRef = useRef<null | HTMLInputElement>(null);
@@ -18,7 +18,7 @@ const TopHeader = () => {
       <div className="flex items-center gap-x-4 text-muted-foreground">
         <Input
           ref={inputRef}
-          style={{ width: `${width + (readOnly ? 0 : 10)}px` }}
+          style={{ width: `${width + (readOnly ? 0 : 20)}px` }}
           className={cn(
             `font-medium font-roboto !p-0 h-max rounded-none outline-none border-transparent focus-visible:ring-0 focus-visible:border-b-primary disabled:cursor-text disabled:!opacity-100`
           )}
@@ -26,7 +26,7 @@ const TopHeader = () => {
           readOnly={readOnly}
           disabled={readOnly}
           onChange={handleChange}
-          onBlur={() => setReadOnly(true)}
+          onBlur={handleOnBlur}
         />
         <Pencil
           className="w-4 h-4 hover:text-primary cursor-pointer"
