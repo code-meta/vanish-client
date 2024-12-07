@@ -2,19 +2,26 @@
 
 import { useAppSelector } from "@/lib/hooks";
 import React from "react";
-import TopHeader from "../../_components/TopHeader";
-import { useParams } from "next/navigation";
 import TopChatHeader from "../../_components/TopChatHeader";
 import ChatBoardWrapper from "./ChatBoardWrapper";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ChatInputBox from "./ChatInputBox";
+import useDirectChatRoom from "@/lib/hooks/useDirectChatRoom";
+import InfoMessageText from "../../dashboard/_components/InfoMessageText";
 
 const MainChatContent = () => {
   const loading = useAppSelector((state) => state.user.loading);
 
-  const params = useParams<{ one_to_one_room_id: string }>();
+  const { exists } = useDirectChatRoom();
 
   if (loading) return null;
+
+  if (!exists)
+    return (
+      <div className="pt-16 text-center">
+        <InfoMessageText text="Oops! Couldn't find a connection. Please check the link and try again." />
+      </div>
+    );
 
   return (
     <div className="flex flex-col h-dvh relative">

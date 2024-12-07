@@ -36,7 +36,33 @@ export interface Message {
   id: string;
   creator_id: string;
   creator_name: string;
-  messageType: MessageContent["type"];
-  content: MessageContent["content"];
   created_at: string;
+  messagePayload: MessageContent;
+}
+
+export interface RoomBase {
+  id: string;
+  roomName: string;
+  messageSecret: string;
+}
+
+export interface OneToOneRoom extends RoomBase {
+  type: "DIRECT";
+  sharedSecretBase64: string;
+}
+
+export interface ManyToManyRoom extends RoomBase {
+  type: "MANY";
+  creator: {
+    id: string;
+    name: string;
+  };
+}
+
+export type ChatRoom = OneToOneRoom | ManyToManyRoom;
+
+export interface SelectedChatRoom {
+  type: ChatRoom["type"];
+  roomId: string;
+  room: ChatRoom;
 }
