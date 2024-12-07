@@ -75,8 +75,6 @@ export default function useCreateNewRoom() {
         room_message_secret: await genRandomKey(),
       };
 
-      console.log(newRoom);
-
       dispatch(setPersonalRooms([...personalRooms, newRoom]));
 
       const encryptRoomData = await encryptData(

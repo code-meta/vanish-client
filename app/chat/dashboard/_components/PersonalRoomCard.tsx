@@ -26,7 +26,7 @@ const PersonalRoomCard = (props: PersonalRoom) => {
           description="You’re about to remove this room. Do you wish to go ahead?"
         />
         <div className="flex items-center justify-between">
-          <span className="font-roboto font-medium">{props.roomName}</span>
+          <span className="font-roboto font-medium select-none">{props.roomName}</span>
           <Trash
             className="w-5 h-5 text-destructive/80 cursor-pointer hover:text-destructive"
             onClick={() => {

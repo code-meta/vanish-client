@@ -19,3 +19,24 @@ export interface Room {
 }
 
 export interface PersonalRoom extends Room {}
+
+export interface TextMessage {
+  type: "TEXT";
+  content: string;
+}
+
+export interface AssetMessage {
+  type: "ASSET";
+  content: string;
+}
+
+export type MessageContent = TextMessage | AssetMessage;
+
+export interface Message {
+  id: string;
+  creator_id: string;
+  creator_name: string;
+  messageType: MessageContent["type"];
+  content: MessageContent["content"];
+  created_at: string;
+}

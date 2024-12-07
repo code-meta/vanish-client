@@ -30,8 +30,6 @@ const CreateRoomDialog = () => {
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
-          closeIcon={false}
-          closeOnOutside={false}
           className="outline-none w-[95%] md:w-[440px]"
         >
           <VisuallyHidden.Root>
