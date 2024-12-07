@@ -1,13 +1,16 @@
 import { useParams } from "next/navigation";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { useEffect, useState } from "react";
+import { setSelectedChatRoom } from "../features/chat/ChatMessageSlice";
 
 export default function useDirectChatRoom() {
   const params = useParams<{ one_to_one_room_id: string }>();
   const connections = useAppSelector((state) => state.user.connections);
-  const loading = useAppSelector((state) => state.user.loading);
+  const user = useAppSelector((state) => state.user.user);
 
   const [exists, setExists] = useState(false);
+
+  const dispatch = useAppDispatch();
 
   function selectConnection() {
     try {
@@ -20,27 +23,30 @@ export default function useDirectChatRoom() {
         return;
       }
 
-      const directChatRoomInfo = {
-        one_to_one_room_id: connection.one_to_one_room_id,
-        one_to_one_message_secret: connection.one_to_one_message_secret,
-        sharedSecretBase64: connection.sharedSecretBase64,
-      };
+      dispatch(
+        setSelectedChatRoom({
+          roomId: connection.id,
+          type: "DIRECT",
+          room: {
+            type: "DIRECT",
+            id: connection.one_to_one_room_id,
+            messageSecret: connection.one_to_one_message_secret,
+            sharedSecretBase64: connection.sharedSecretBase64,
+          },
+          Message: [],
+        })
+      );
 
       setExists(true);
-
-      console.log("xxxxxxxxxxxxxx");
-      console.log(directChatRoomInfo);
-      console.log("xxxxxxxxxxxxxx");
     } catch (error) {
       console.log("something went wrong");
-    } finally {
       setExists(false);
     }
   }
 
   useEffect(() => {
     selectConnection();
-  }, [loading]);
+  }, [user.id]);
 
   return { exists };
 }

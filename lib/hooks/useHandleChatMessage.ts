@@ -1,46 +1,50 @@
 import { useParams } from "next/navigation";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { useEffect, useState } from "react";
+import { updateMessages } from "../features/chat/ChatMessageSlice";
+import { Message } from "../types";
+import { ulid } from "ulid";
 
-export default function useDirectChatRoom() {
-  const params = useParams<{ one_to_one_room_id: string }>();
-  const connections = useAppSelector((state) => state.user.connections);
-  const loading = useAppSelector((state) => state.user.loading);
+export default function useHandleChatMessage() {
+  const [textMessage, setTextMessage] = useState("");
 
-  const [exists, setExists] = useState(false);
+  const user = useAppSelector((state) => state.user.user);
 
-  function selectConnection() {
-    try {
-      const connection = connections.find(
-        (item) => item.one_to_one_room_id === params.one_to_one_room_id
-      );
+  const messages = useAppSelector(
+    (state) => state.chatMessage.selectedChatRoom?.Message
+  );
 
-      if (!connection) {
-        setExists(false);
-        return;
-      }
+  const dispatch = useAppDispatch();
 
-      const directChatRoomInfo = {
-        one_to_one_room_id: connection.one_to_one_room_id,
-        one_to_one_message_secret: connection.one_to_one_message_secret,
-        sharedSecretBase64: connection.sharedSecretBase64,
-      };
+  function scrollToView(id: string) {
+    const el = document.getElementById(id);
 
-      setExists(true);
-
-      console.log("xxxxxxxxxxxxxx");
-      console.log(directChatRoomInfo);
-      console.log("xxxxxxxxxxxxxx");
-    } catch (error) {
-      console.log("something went wrong");
-    } finally {
-      setExists(false);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
     }
   }
 
-  useEffect(() => {
-    selectConnection();
-  }, [loading]);
+  function submitTextMessage() {
+    if (!messages || textMessage.trim() === "") return;
 
-  return { exists };
+    const newMessage: Message = {
+      id: ulid(),
+      creator_name: user.name,
+      creator_id: user.id,
+      messagePayload: { type: "TEXT", content: textMessage },
+      created_at: new Date().toISOString(),
+    };
+
+    dispatch(updateMessages([...messages, newMessage]));
+
+    scrollToView("chatBoard");
+
+    setTextMessage("");
+  }
+
+  return {
+    textMessage,
+    setTextMessage,
+    submitTextMessage,
+  };
 }

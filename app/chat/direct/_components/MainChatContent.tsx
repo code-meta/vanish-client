@@ -1,10 +1,10 @@
 "use client";
 
 import { useAppSelector } from "@/lib/hooks";
-import React from "react";
+import React, { useRef } from "react";
 import TopChatHeader from "../../_components/TopChatHeader";
 import ChatBoardWrapper from "./ChatBoardWrapper";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import ChatInputBox from "./ChatInputBox";
 import useDirectChatRoom from "@/lib/hooks/useDirectChatRoom";
 import InfoMessageText from "../../dashboard/_components/InfoMessageText";
@@ -13,6 +13,8 @@ const MainChatContent = () => {
   const loading = useAppSelector((state) => state.user.loading);
 
   const { exists } = useDirectChatRoom();
+
+  const boardRef = useRef<HTMLDivElement>(null);
 
   if (loading) return null;
 
@@ -29,8 +31,9 @@ const MainChatContent = () => {
         <TopChatHeader />
       </div>
 
-      <ScrollArea className="flex-1 pt-28 px-5">
+      <ScrollArea className="flex-1 pt-28 px-5" ref={boardRef}>
         <ChatBoardWrapper />
+        <div className="p-8" id="chatBoard"></div>
       </ScrollArea>
 
       <div className="pt-1 pb-4 fixed bottom-0 left-1/2 transform -translate-x-1/2 bg-background w-[calc(100%-1rem)]">

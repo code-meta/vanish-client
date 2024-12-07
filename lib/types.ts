@@ -42,7 +42,6 @@ export interface Message {
 
 export interface RoomBase {
   id: string;
-  roomName: string;
   messageSecret: string;
 }
 
@@ -53,6 +52,7 @@ export interface OneToOneRoom extends RoomBase {
 
 export interface ManyToManyRoom extends RoomBase {
   type: "MANY";
+  roomName: string;
   creator: {
     id: string;
     name: string;
@@ -65,4 +65,5 @@ export interface SelectedChatRoom {
   type: ChatRoom["type"];
   roomId: string;
   room: ChatRoom;
+  Message: Message[];
 }
