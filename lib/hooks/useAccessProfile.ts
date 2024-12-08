@@ -60,6 +60,16 @@ export default function useAccessProfile() {
       if (encryptedUserInfo && encryptedProfileInfo) {
         userInfo = await decryptData(encryptedUserInfo, password.value);
 
+        if ("error" in userInfo) {
+          toast({
+            title:
+              "Access denied. Your password didn’t match, Double-check and try again.",
+            variant: "destructive",
+          });
+
+          return;
+        }
+
         profileInfo = await decryptData(
           encryptedProfileInfo,
           userInfo.privateKeyBase64
@@ -94,6 +104,7 @@ export default function useAccessProfile() {
       dispatch(updateLoading(false));
 
       if (updatePassword) {
+        setNewPassword("");
         setNewPassword(genStrongPassword());
         setShowNewPassword(true);
         return;
@@ -137,6 +148,9 @@ export default function useAccessProfile() {
       title: "Password Copied!",
       description: "Keep the new password somewhere safe.",
     });
+
+    setNewPassword("");
+    setShowNewPassword(false);
   }
 
   return {

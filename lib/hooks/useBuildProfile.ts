@@ -28,11 +28,9 @@ export default function useBuildProfile() {
   const { genStrongPassword } = usePassword();
 
   useEffect(() => {
-    const strong_password = genStrongPassword();
-
     setPassword((prev) => ({
       ...prev,
-      value: strong_password,
+      value: genStrongPassword(),
     }));
   }, []);
 
@@ -89,7 +87,8 @@ export default function useBuildProfile() {
     if ("error" in encryptUserData || "error" in encryptProfileData) {
       toast({
         title: "Unexpected Error",
-        description: "An unexpected error occurred. Please refresh the page and try again.",
+        description:
+          "An unexpected error occurred. Please refresh the page and try again.",
         variant: "destructive",
       });
 
@@ -109,6 +108,11 @@ export default function useBuildProfile() {
     toast({
       title: "Password Copied!",
       description: "Keep the password somewhere safe.",
+    });
+
+    setPassword({
+      value: "",
+      error: "",
     });
   }
 

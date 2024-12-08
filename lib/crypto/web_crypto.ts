@@ -86,3 +86,41 @@ export const decryptData = async (
     return { error: "Decryption Failed!" };
   }
 };
+
+// ! encrypt file
+
+
+
+export const encryptFile = async (file: File, password: string) => {
+  try {
+    // Convert file to ArrayBuffer
+    const arrayBuffer = await file.arrayBuffer();
+
+    // Generate a random salt and derive a key
+    const salt = crypto.getRandomValues(new Uint8Array(16)); // 16-byte salt
+    const derivedKey = await deriveKey(password, salt);
+
+    // Generate a random initialization vector (IV) for AES-GCM
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // 12-byte IV
+
+    // Encrypt the file data (ArrayBuffer) using AES-GCM
+    const encrypted = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      derivedKey,
+      arrayBuffer
+    );
+
+    // Convert encrypted data and IV to Base64
+    const encryptedData = btoa(
+      String.fromCharCode(...new Uint8Array(encrypted))
+    );
+    const ivBase64 = btoa(String.fromCharCode(...iv));
+    const saltBase64 = btoa(String.fromCharCode(...salt));
+
+    // Return the encrypted data along with the salt and IV (all encoded in Base64)
+    return { salt: saltBase64, iv: ivBase64, data: encryptedData };
+  } catch (error) {
+    console.error("Encryption failed:", error);
+    return { error: "Encryption Failed!" };
+  }
+};

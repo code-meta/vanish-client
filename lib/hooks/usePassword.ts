@@ -3,7 +3,7 @@ import generator from "generate-password";
 export default function usePassword() {
   function genStrongPassword() {
     const strong_password = generator.generate({
-      length: 16,
+      length: 30,
       numbers: true,
       uppercase: true,
       lowercase: true,
