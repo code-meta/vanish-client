@@ -1,4 +1,5 @@
 import { Textarea } from "@/components/ui/textarea";
+import { useAppSelector } from "@/lib/hooks";
 import useHandleChatMessage from "@/lib/hooks/useHandleChatMessage";
 import { Paperclip, Send } from "lucide-react";
 import React from "react";
@@ -8,6 +9,11 @@ import React from "react";
 const ChatInputBox = () => {
   const { textMessage, setTextMessage, submitTextMessage } =
     useHandleChatMessage();
+
+  const roomSettings = useAppSelector(
+    (state) => state.chatMessage.roomSettings
+  );
+
   return (
     <div className="max-w-3xl w-full px-4 mx-auto min-h-20 bg-card pt-2 rounded-sm">
       <Textarea
@@ -15,6 +21,12 @@ const ChatInputBox = () => {
         className="px-0 mx-0 border-none focus-visible:ring-0 resize-none scrollbar-transparent !h-[56px] min-h-0"
         value={textMessage}
         onChange={(e) => setTextMessage(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && roomSettings.sendOnEnter) {
+            e.preventDefault();
+            submitTextMessage();
+          }
+        }}
       />
       <div className="flex justify-between items-center py-4">
         <Paperclip className="text-muted-foreground cursor-pointer" />

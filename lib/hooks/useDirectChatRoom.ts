@@ -2,11 +2,14 @@ import { useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { useEffect, useState } from "react";
 import { setSelectedChatRoom } from "../features/chat/ChatMessageSlice";
+import useHandleChatMessage from "./useHandleChatMessage";
 
 export default function useDirectChatRoom() {
   const params = useParams<{ one_to_one_room_id: string }>();
   const connections = useAppSelector((state) => state.user.connections);
   const user = useAppSelector((state) => state.user.user);
+
+  const { setSendOnEnter } = useHandleChatMessage();
 
   const [exists, setExists] = useState(false);
   const [chattingWith, setChattingWith] = useState("");
@@ -49,6 +52,7 @@ export default function useDirectChatRoom() {
 
   useEffect(() => {
     selectConnection();
+    setSendOnEnter();
   }, [user.id]);
 
   return { exists, chattingWith };

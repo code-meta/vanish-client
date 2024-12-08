@@ -21,6 +21,7 @@ import {
   updateAssetExpiry,
   updateTextMessageExpiry,
 } from "@/lib/features/chat/ChatMessageSlice";
+import useHandleChatMessage from "@/lib/hooks/useHandleChatMessage";
 
 const ChatRoomSettingsDrawer = ({
   isOpen,
@@ -29,9 +30,11 @@ const ChatRoomSettingsDrawer = ({
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const roomExpirationSettings = useAppSelector(
-    (state) => state.chatMessage.roomExpirationSettings
+  const roomSettings = useAppSelector(
+    (state) => state.chatMessage.roomSettings
   );
+
+  const { handleSendOnEnter } = useHandleChatMessage();
 
   const dispatch = useAppDispatch();
 
@@ -58,7 +61,7 @@ const ChatRoomSettingsDrawer = ({
                 </label>
 
                 <Select
-                  defaultValue={`${roomExpirationSettings.textMessageExpiry}`}
+                  defaultValue={`${roomSettings.textMessageExpiry}`}
                   onValueChange={(value) => {
                     dispatch(updateTextMessageExpiry(+value));
                   }}
@@ -86,7 +89,7 @@ const ChatRoomSettingsDrawer = ({
                 </label>
 
                 <Select
-                  defaultValue={`${roomExpirationSettings.assetExpiry}`}
+                  defaultValue={`${roomSettings.assetExpiry}`}
                   onValueChange={(value) => {
                     dispatch(updateAssetExpiry(+value));
                   }}
@@ -107,7 +110,13 @@ const ChatRoomSettingsDrawer = ({
               <Separator className="my-4" />
 
               <div className="flex items-center gap-x-4">
-                <Switch id="send-on-enter" defaultChecked={true} />
+                <Switch
+                  id="send-on-enter"
+                  defaultChecked={roomSettings.sendOnEnter}
+                  onCheckedChange={(value) => {
+                    handleSendOnEnter(value);
+                  }}
+                />
                 <label
                   htmlFor="send-on-enter"
                   className="text-sm font-medium text-muted-foreground"

@@ -6,9 +6,10 @@ import { Message, SelectedChatRoom } from "@/lib/types";
 interface chatMessageState {
   loading: boolean;
   selectedChatRoom: SelectedChatRoom | null;
-  roomExpirationSettings: {
+  roomSettings: {
     textMessageExpiry: number;
     assetExpiry: number;
+    sendOnEnter: boolean;
   };
 }
 
@@ -16,9 +17,10 @@ const initialState: chatMessageState = {
   loading: true,
   selectedChatRoom: null,
 
-  roomExpirationSettings: {
+  roomSettings: {
     textMessageExpiry: 3,
     assetExpiry: 5,
+    sendOnEnter: true,
   },
 };
 
@@ -36,11 +38,15 @@ export const chatMessageSlice = createSlice({
     },
 
     updateTextMessageExpiry: (state, action: PayloadAction<number>) => {
-      state.roomExpirationSettings.textMessageExpiry = action.payload;
+      state.roomSettings.textMessageExpiry = action.payload;
     },
 
     updateAssetExpiry: (state, action: PayloadAction<number>) => {
-      state.roomExpirationSettings.assetExpiry = action.payload;
+      state.roomSettings.assetExpiry = action.payload;
+    },
+
+    updateSendOnEnter: (state, action: PayloadAction<boolean>) => {
+      state.roomSettings.sendOnEnter = action.payload;
     },
   },
 });
@@ -50,6 +56,7 @@ export const {
   updateMessages,
   updateTextMessageExpiry,
   updateAssetExpiry,
+  updateSendOnEnter,
 } = chatMessageSlice.actions;
 
 export const selectChatMessage = (state: RootState) => state.chatMessage;

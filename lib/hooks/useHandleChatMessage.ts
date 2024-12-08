@@ -1,7 +1,9 @@
-import { useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { useEffect, useState } from "react";
-import { updateMessages } from "../features/chat/ChatMessageSlice";
+import { useState } from "react";
+import {
+  updateMessages,
+  updateSendOnEnter,
+} from "../features/chat/ChatMessageSlice";
 import { Message } from "../types";
 import { ulid } from "ulid";
 
@@ -42,9 +44,28 @@ export default function useHandleChatMessage() {
     setTextMessage("");
   }
 
+  function setSendOnEnter() {
+    let onEnter = localStorage.getItem("onEnter");
+
+    if (onEnter === null) {
+      localStorage.setItem("onEnter", "true");
+      onEnter = "true";
+    }
+
+    dispatch(updateSendOnEnter(JSON.parse(onEnter)));
+  }
+
+  function handleSendOnEnter(value: boolean) {
+    localStorage.setItem("onEnter", JSON.stringify(value));
+
+    dispatch(updateSendOnEnter(value));
+  }
+
   return {
     textMessage,
     setTextMessage,
     submitTextMessage,
+    setSendOnEnter,
+    handleSendOnEnter,
   };
 }
