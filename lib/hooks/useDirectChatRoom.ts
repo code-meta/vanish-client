@@ -9,6 +9,7 @@ export default function useDirectChatRoom() {
   const user = useAppSelector((state) => state.user.user);
 
   const [exists, setExists] = useState(false);
+  const [chattingWith, setChattingWith] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -22,6 +23,8 @@ export default function useDirectChatRoom() {
         setExists(false);
         return;
       }
+
+      setChattingWith(connection.name);
 
       dispatch(
         setSelectedChatRoom({
@@ -48,5 +51,5 @@ export default function useDirectChatRoom() {
     selectConnection();
   }, [user.id]);
 
-  return { exists };
+  return { exists, chattingWith };
 }

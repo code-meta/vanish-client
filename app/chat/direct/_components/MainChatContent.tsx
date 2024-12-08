@@ -12,9 +12,7 @@ import InfoMessageText from "../../dashboard/_components/InfoMessageText";
 const MainChatContent = () => {
   const loading = useAppSelector((state) => state.user.loading);
 
-  const { exists } = useDirectChatRoom();
-
-  const boardRef = useRef<HTMLDivElement>(null);
+  const { exists, chattingWith } = useDirectChatRoom();
 
   if (loading) return null;
 
@@ -28,10 +26,10 @@ const MainChatContent = () => {
   return (
     <div className="flex flex-col h-dvh relative">
       <div className="container mx-auto px-4 max-w-[1024px] fixed left-1/2 transform -translate-x-1/2 top-0 z-50">
-        <TopChatHeader />
+        <TopChatHeader name={chattingWith} />
       </div>
 
-      <ScrollArea className="flex-1 pt-28 px-5" ref={boardRef}>
+      <ScrollArea className="flex-1 pt-28 px-5">
         <ChatBoardWrapper />
         <div className="p-8" id="chatBoard"></div>
       </ScrollArea>
