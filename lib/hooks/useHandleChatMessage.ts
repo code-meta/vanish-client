@@ -16,7 +16,9 @@ export default function useHandleChatMessage() {
     (state) => state.chatMessage.selectedChatRoom?.Message
   );
 
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<
+    { id: string; file: File }[]
+  >([]);
 
   const dispatch = useAppDispatch();
 
@@ -69,12 +71,22 @@ export default function useHandleChatMessage() {
   }
 
   function handleFileUploadSelect(files: File[]) {
-    console.log(files)
-    setSelectedFiles(() => [...files]);
+    const filesList = files.map((item) => {
+      return { id: ulid(), file: item };
+    });
+
+    setSelectedFiles((prev) => [...prev, ...filesList]);
+  }
+
+  function handleRemoveSelectedFile(id: string) {
+    const filesList = selectedFiles.filter((item) => item.id !== id);
+
+    setSelectedFiles(() => [...filesList]);
   }
 
   function submitFileUpload() {
     console.log("file uploaded");
+    setSelectedFiles([]);
   }
 
   return {
@@ -86,5 +98,6 @@ export default function useHandleChatMessage() {
     handleFileUploadSelect,
     selectedFiles,
     submitFileUpload,
+    handleRemoveSelectedFile,
   };
 }

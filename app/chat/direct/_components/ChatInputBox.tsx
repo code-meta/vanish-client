@@ -1,8 +1,18 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useAppSelector } from "@/lib/hooks";
 import useHandleChatMessage from "@/lib/hooks/useHandleChatMessage";
-import { Paperclip, Send } from "lucide-react";
+import {
+  FileArchive,
+  FileImage,
+  FileVideo,
+  Paperclip,
+  Send,
+  X,
+} from "lucide-react";
 import React from "react";
+import GetFileIcon from "./GetFileIcon";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 
 // ! use this pattern for the websocket link CrUMzBdRKGH31ICm9gRAQEOK0tkZ3w-_rCL3GXVl-DI-sharedSecretKy
 
@@ -14,6 +24,7 @@ const ChatInputBox = () => {
     handleFileUploadSelect,
     selectedFiles,
     submitFileUpload,
+    handleRemoveSelectedFile,
   } = useHandleChatMessage();
 
   const roomSettings = useAppSelector(
@@ -39,24 +50,46 @@ const ChatInputBox = () => {
 
       {selectedFiles.length >= 1 && (
         <>
-          {selectedFiles.map(({ name, type }, i) => {
-            const fileName = name.split(".").slice(0, -1).join(".");
+          <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex w-max space-x-4 pb-2.5 pt-1.5 lg:pt-2 min-h-[56px]">
+              {selectedFiles.map(({ id, file: { name } }) => {
+                const fileName = name.split(".").slice(0, -1).join(".");
 
-            const extension = name.substring(name.lastIndexOf(".") + 1);
+                const extension = name.substring(name.lastIndexOf(".") + 1);
 
-            const displayName = `${fileName.slice(0, 18)}${
-              fileName.length > 18 && ".."
-            }.${extension}`;
+                const displayName = `${fileName.slice(0, 18)}${
+                  fileName.length > 18 && ".."
+                }.${extension}`;
 
-            return (
-              <div
-                key={name + i}
-                className="bg-background border border-border w-max px-4 py-1 rounded-full"
-              >
-                <p className="text-muted-foreground">{displayName}</p>
-              </div>
-            );
-          })}
+                return (
+                  <div
+                    key={id}
+                    className="bg-background border border-border w-max px-4 py-1.5 lg:py-2 rounded-full flex items-center justify-center gap-x-2"
+                  >
+                    <div className="text-primary/60">
+                      <GetFileIcon extension={extension} />
+                    </div>
+                    <p className="text-muted-foreground select-none">
+                      {displayName}
+                    </p>
+                    <div
+                      className="hover:bg-destructive/30 cursor-pointer ml-2 text-destructive-foreground/70"
+                      onClick={() => handleRemoveSelectedFile(id)}
+                    >
+                      <X />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+
+          <Input
+            placeholder="Add a caption..."
+            className="border-none focus-visible:ring-0 py-0"
+          />
         </>
       )}
 
@@ -69,7 +102,7 @@ const ChatInputBox = () => {
           onChange={(e) => {
             const files = e.target.files;
             if (files && files.length > 0) {
-              handleFileUploadSelect([...files]);
+              handleFileUploadSelect(Array.from(files));
             }
           }}
         />
@@ -80,7 +113,7 @@ const ChatInputBox = () => {
 
         {selectedFiles.length >= 1 ? (
           <Send
-            className="text-red-950 cursor-pointer"
+            className="text-primary cursor-pointer"
             onClick={() => {
               submitFileUpload();
             }}
