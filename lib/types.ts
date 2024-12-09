@@ -22,12 +22,16 @@ export interface PersonalRoom extends Room {}
 
 export interface TextMessage {
   type: "TEXT";
+  iv: string;
+  salt: string;
   content: string;
 }
 
 export interface AssetMessage {
   type: "ASSET";
-  content: string;
+  iv: string;
+  salt: string;
+  url: string;
 }
 
 export type MessageContent = TextMessage | AssetMessage;

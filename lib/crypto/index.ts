@@ -1,4 +1,4 @@
-export { encryptData, decryptData, deriveKey } from "./web_crypto";
+export { encryptData, decryptData, deriveKey } from "./web_crypto_data";
 
 export {
   gen_crypto_box_keypair,

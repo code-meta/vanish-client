@@ -16,6 +16,8 @@ export default function useHandleChatMessage() {
     (state) => state.chatMessage.selectedChatRoom?.Message
   );
 
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
   const dispatch = useAppDispatch();
 
   function scrollToView(id: string) {
@@ -33,7 +35,12 @@ export default function useHandleChatMessage() {
       id: ulid(),
       creator_name: user.name,
       creator_id: user.id,
-      messagePayload: { type: "TEXT", content: textMessage },
+      messagePayload: {
+        type: "TEXT",
+        content: textMessage,
+        iv: "x",
+        salt: "kk",
+      },
       created_at: new Date().toISOString(),
     };
 
@@ -61,11 +68,23 @@ export default function useHandleChatMessage() {
     dispatch(updateSendOnEnter(value));
   }
 
+  function handleFileUploadSelect(files: File[]) {
+    console.log(files)
+    setSelectedFiles(() => [...files]);
+  }
+
+  function submitFileUpload() {
+    console.log("file uploaded");
+  }
+
   return {
     textMessage,
     setTextMessage,
     submitTextMessage,
     setSendOnEnter,
     handleSendOnEnter,
+    handleFileUploadSelect,
+    selectedFiles,
+    submitFileUpload,
   };
 }
