@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { measureTextWidth } from "../utils";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +18,8 @@ export default function useHandleNameEdit() {
   const [readOnly, setReadOnly] = useState(true);
 
   const [width, setWidth] = useState(0);
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setWidth(measureTextWidth(name));
@@ -56,11 +58,28 @@ export default function useHandleNameEdit() {
 
     setWidth(textWidth);
 
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     if (value.trim() === "" || value.trim().length <= 1) {
-      toast({
-        title: "Name too short. It needs to have at least 2 characters.",
-        variant: "destructive",
-      });
+      timeoutRef.current = setTimeout(() => {
+        toast({
+          title: "Name too short. It needs to have at least 2 characters.",
+          variant: "destructive",
+        });
+      }, 1000);
+
+      return;
+    }
+
+    if (value.trim().length > 18) {
+      timeoutRef.current = setTimeout(() => {
+        toast({
+          title: "Name too long. It needs to be less than 18 characters.",
+          variant: "destructive",
+        });
+      }, 1000);
 
       return;
     }

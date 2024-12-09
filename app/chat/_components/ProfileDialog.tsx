@@ -74,6 +74,7 @@ const ProfileDialog = () => {
                     placeholder="Type a very strong password"
                     value={password.value}
                     autoComplete="off"
+                    className="pr-12 lg:pr-0"
                     readOnly
                   />
                   <button

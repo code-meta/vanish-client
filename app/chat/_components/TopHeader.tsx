@@ -18,7 +18,7 @@ const TopHeader = () => {
       <div className="flex items-center gap-x-4 text-muted-foreground">
         <Input
           ref={inputRef}
-          style={{ width: `${width + (readOnly ? 4 : 20)}px` }}
+          style={{ width: `${width + (readOnly ? 10 : 20)}px` }}
           className={cn(
             `font-medium font-roboto !p-0 h-max rounded-none outline-none border-transparent focus-visible:ring-0 focus-visible:border-b-primary disabled:cursor-text disabled:!opacity-100`
           )}
