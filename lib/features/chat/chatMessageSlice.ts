@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/lib/store";
 import { Message, SelectedChatRoom } from "@/lib/types";
+import { Channel } from "phoenix";
 
 interface chatMessageState {
   loading: boolean;
@@ -11,6 +12,7 @@ interface chatMessageState {
     assetExpiry: number;
     sendOnEnter: boolean;
   };
+  selectedRoomSocketChannel: Channel | null;
 }
 
 const initialState: chatMessageState = {
@@ -22,6 +24,7 @@ const initialState: chatMessageState = {
     assetExpiry: 5,
     sendOnEnter: true,
   },
+  selectedRoomSocketChannel: null,
 };
 
 export const chatMessageSlice = createSlice({
@@ -48,6 +51,10 @@ export const chatMessageSlice = createSlice({
     updateSendOnEnter: (state, action: PayloadAction<boolean>) => {
       state.roomSettings.sendOnEnter = action.payload;
     },
+
+    setRoomChannel: (state, action: PayloadAction<Channel | null>) => {
+      state.selectedRoomSocketChannel = action.payload;
+    },
   },
 });
 
@@ -57,6 +64,7 @@ export const {
   updateTextMessageExpiry,
   updateAssetExpiry,
   updateSendOnEnter,
+  setRoomChannel,
 } = chatMessageSlice.actions;
 
 export const selectChatMessage = (state: RootState) => state.chatMessage;

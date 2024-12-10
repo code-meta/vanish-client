@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   updateMessages,
   updateSendOnEnter,
-} from "../features/chat/ChatMessageSlice";
+} from "../features/chat/chatMessageSlice";
 import { Message } from "../types";
 import { ulid } from "ulid";
 
@@ -16,11 +16,24 @@ export default function useHandleChatMessage() {
     (state) => state.chatMessage.selectedChatRoom?.Message
   );
 
+  const roomChannel = useAppSelector(
+    (state) => state.chatMessage.selectedRoomSocketChannel
+  );
+
   const [selectedFiles, setSelectedFiles] = useState<
     { id: string; file: File }[]
   >([]);
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!roomChannel || !messages) return;
+
+    roomChannel.on("new_msg", (payload) => {
+      console.log("new message", payload.body);
+      dispatch(updateMessages([...messages, payload.body]));
+    });
+  }, [roomChannel]);
 
   function scrollToView(id: string) {
     const el = document.getElementById(id);
@@ -46,11 +59,14 @@ export default function useHandleChatMessage() {
       created_at: new Date().toISOString(),
     };
 
-    dispatch(updateMessages([...messages, newMessage]));
+    // dispatch(updateMessages([...messages, newMessage]));
 
     scrollToView("chatBoard");
 
     setTextMessage("");
+
+    if (!roomChannel) return;
+    roomChannel.push("new_msg", { body: newMessage });
   }
 
   function setSendOnEnter() {

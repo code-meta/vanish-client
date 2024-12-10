@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./features/user/userSlice";
-import chatMessageReducer from "./features/chat/ChatMessageSlice";
+import chatMessageReducer from "./features/chat/chatMessageSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -8,6 +8,13 @@ export const makeStore = () => {
       user: userReducer,
       chatMessage: chatMessageReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: ["chatMessage/setRoomChannel"],
+          ignoredPaths: ["chatMessage.selectedRoomSocketChannel"],
+        },
+      }),
   });
 };
 
