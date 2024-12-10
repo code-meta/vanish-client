@@ -1,47 +1,30 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   updateMessages,
   updateSendOnEnter,
 } from "../features/chat/chatMessageSlice";
 import { Message } from "../types";
 import { ulid } from "ulid";
+import { Channel } from "phoenix";
+import useServices from "./useServices";
 
-export default function useHandleChatMessage() {
+export default function useHandleChatMessage(params: {
+  channelRef: React.MutableRefObject<Channel | null>;
+}) {
   const [textMessage, setTextMessage] = useState("");
 
   const user = useAppSelector((state) => state.user.user);
 
-  const messages = useAppSelector(
-    (state) => state.chatMessage.selectedChatRoom?.Message
-  );
+  const { scrollToView } = useServices();
 
-  const roomChannel = useAppSelector(
-    (state) => state.chatMessage.selectedRoomSocketChannel
-  );
+  const messages = useAppSelector((state) => state.chatMessage.roomMessages);
 
   const [selectedFiles, setSelectedFiles] = useState<
     { id: string; file: File }[]
   >([]);
 
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (!roomChannel || !messages) return;
-
-    roomChannel.on("new_msg", (payload) => {
-      console.log("new message", payload.body);
-      dispatch(updateMessages([...messages, payload.body]));
-    });
-  }, [roomChannel]);
-
-  function scrollToView(id: string) {
-    const el = document.getElementById(id);
-
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  }
 
   function submitTextMessage() {
     if (!messages || textMessage.trim() === "") return;
@@ -59,14 +42,17 @@ export default function useHandleChatMessage() {
       created_at: new Date().toISOString(),
     };
 
-    // dispatch(updateMessages([...messages, newMessage]));
-
-    scrollToView("chatBoard");
+    dispatch(updateMessages(newMessage));
 
     setTextMessage("");
 
-    if (!roomChannel) return;
-    roomChannel.push("new_msg", { body: newMessage });
+    scrollToView("chatBoard");
+
+    const channelRef = params.channelRef.current;
+
+    if (!channelRef) return;
+
+    channelRef.push("new_msg", { body: newMessage });
   }
 
   function setSendOnEnter() {

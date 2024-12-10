@@ -20,7 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   updateAssetExpiry,
   updateTextMessageExpiry,
-} from "@/lib/features/chat/ChatMessageSlice";
+} from "@/lib/features/chat/chatMessageSlice";
 import useHandleChatMessage from "@/lib/hooks/useHandleChatMessage";
 
 const ChatRoomSettingsDrawer = ({

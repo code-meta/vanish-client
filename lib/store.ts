@@ -8,13 +8,6 @@ export const makeStore = () => {
       user: userReducer,
       chatMessage: chatMessageReducer,
     },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: ["chatMessage/setRoomChannel"],
-          ignoredPaths: ["chatMessage.selectedRoomSocketChannel"],
-        },
-      }),
   });
 };
 

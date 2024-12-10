@@ -1,22 +1,20 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useAppSelector } from "@/lib/hooks";
 import useHandleChatMessage from "@/lib/hooks/useHandleChatMessage";
-import {
-  FileArchive,
-  FileImage,
-  FileVideo,
-  Paperclip,
-  Send,
-  X,
-} from "lucide-react";
+import { Paperclip, Send, X } from "lucide-react";
 import React from "react";
 import GetFileIcon from "./GetFileIcon";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { Channel } from "phoenix";
 
 // ! use this pattern for the websocket link CrUMzBdRKGH31ICm9gRAQEOK0tkZ3w-_rCL3GXVl-DI-sharedSecretKy
 
-const ChatInputBox = () => {
+const ChatInputBox = ({
+  channelRef,
+}: {
+  channelRef: React.MutableRefObject<Channel | null>;
+}) => {
   const {
     textMessage,
     setTextMessage,
@@ -25,7 +23,7 @@ const ChatInputBox = () => {
     selectedFiles,
     submitFileUpload,
     handleRemoveSelectedFile,
-  } = useHandleChatMessage();
+  } = useHandleChatMessage({ channelRef });
 
   const roomSettings = useAppSelector(
     (state) => state.chatMessage.roomSettings

@@ -69,5 +69,4 @@ export interface SelectedChatRoom {
   type: ChatRoom["type"];
   roomId: string;
   room: ChatRoom;
-  Message: Message[];
 }

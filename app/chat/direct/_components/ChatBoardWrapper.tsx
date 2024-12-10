@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const ChatBoardWrapper = () => {
   const messages = useAppSelector(
-    (state) => state.chatMessage.selectedChatRoom?.Message
+    (state) => state.chatMessage.roomMessages
   );
 
   const user = useAppSelector((state) => state.user.user);
