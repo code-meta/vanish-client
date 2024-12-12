@@ -4,6 +4,7 @@ import { updateMessages } from "../features/chat/chatMessageSlice";
 import { SelectedChatRoom } from "../types";
 import { Channel, Socket } from "phoenix";
 import useServices from "./useServices";
+import { decryptData } from "../crypto";
 
 export default function useHandleChatRoom({
   exists,
@@ -49,16 +50,28 @@ export default function useHandleChatRoom({
         channelRef.current = channel;
 
         channel.on("new_msg", (payload) => {
-          console.log("new message");
-          console.log(payload.body);
+          (async () => {
+            if (user.id === payload.body.creator_id) return;
 
-          if (user.id === payload.body.creator_id) return;
+            const message = { ...payload.body };
 
-          dispatch(updateMessages(payload.body));
+            const { error, data } = await decryptData(
+              JSON.stringify({
+                salt: message.messagePayload.salt,
+                iv: message.messagePayload.iv,
+                data: message.messagePayload.content,
+              }),
+              selectedChatRoom.room.messageSecret
+            );
 
-          scrollToView("chatBoard");
+            if (error) return;
 
-          console.log("new message");
+            message.messagePayload.content = data;
+
+            dispatch(updateMessages(message));
+
+            scrollToView("chatBoard");
+          })();
         });
 
         console.log(

@@ -22,15 +22,15 @@ export interface PersonalRoom extends Room {}
 
 export interface TextMessage {
   type: "TEXT";
-  iv: string;
-  salt: string;
+  iv?: string;
+  salt?: string;
   content: string;
 }
 
 export interface AssetMessage {
   type: "ASSET";
-  iv: string;
-  salt: string;
+  iv?: string;
+  salt?: string;
   url: string;
 }
 
@@ -39,8 +39,10 @@ export type MessageContent = TextMessage | AssetMessage;
 export interface Message {
   id: string;
   creator_id: string;
+  from_room_id: string;
   creator_name: string;
   created_at: string;
+  expiry: string;
   messagePayload: MessageContent;
 }
 

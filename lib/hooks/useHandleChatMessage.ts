@@ -8,6 +8,7 @@ import { Message } from "../types";
 import { ulid } from "ulid";
 import { Channel } from "phoenix";
 import useServices from "./useServices";
+import { encryptData } from "../crypto";
 
 export default function useHandleChatMessage(params: {
   channelRef: React.MutableRefObject<Channel | null>;
@@ -19,6 +20,9 @@ export default function useHandleChatMessage(params: {
   const { scrollToView } = useServices();
 
   const messages = useAppSelector((state) => state.chatMessage.roomMessages);
+  const selectedChatRoom = useAppSelector(
+    (state) => state.chatMessage.selectedChatRoom
+  );
 
   const [selectedFiles, setSelectedFiles] = useState<
     { id: string; file: File }[]
@@ -26,19 +30,23 @@ export default function useHandleChatMessage(params: {
 
   const dispatch = useAppDispatch();
 
-  function submitTextMessage() {
-    if (!messages || textMessage.trim() === "") return;
+  async function submitTextMessage() {
+    if (!selectedChatRoom || !messages || textMessage.trim() === "") return;
+
+    const from_room_id = `${
+      selectedChatRoom.room.id
+    }.${selectedChatRoom.room.messageSecret.slice(0, 8)}`;
 
     const newMessage: Message = {
       id: ulid(),
       creator_name: user.name,
       creator_id: user.id,
+      from_room_id,
       messagePayload: {
         type: "TEXT",
         content: textMessage,
-        iv: "x",
-        salt: "kk",
       },
+      expiry: new Date(Date.now() + 3 * 60 * 1000).toISOString(),
       created_at: new Date().toISOString(),
     };
 
@@ -48,11 +56,29 @@ export default function useHandleChatMessage(params: {
 
     scrollToView("chatBoard");
 
+    const { error, iv, data, salt } = await encryptData(
+      { data: textMessage },
+      selectedChatRoom.room.messageSecret
+    );
+
+    if (error) return;
+
     const channelRef = params.channelRef.current;
 
     if (!channelRef) return;
 
-    channelRef.push("new_msg", { body: newMessage });
+    const encryptedMessage = JSON.parse(JSON.stringify(newMessage));
+
+    encryptedMessage.messagePayload.iv = iv;
+    encryptedMessage.messagePayload.salt = salt;
+
+    if (encryptedMessage.messagePayload.type === "TEXT" && data) {
+      encryptedMessage.messagePayload.content = data;
+    }
+
+    channelRef.push("new_msg", {
+      body: encryptedMessage,
+    });
   }
 
   function setSendOnEnter() {
