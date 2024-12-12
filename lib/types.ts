@@ -37,13 +37,13 @@ export interface AssetMessage {
 export type MessageContent = TextMessage | AssetMessage;
 
 export interface Message {
-  id: string;
+  msg_id: string;
   creator_id: string;
   from_room_id: string;
   creator_name: string;
   created_at: string;
   expiry: string;
-  messagePayload: MessageContent;
+  message_payload: MessageContent;
 }
 
 export interface RoomBase {

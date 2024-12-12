@@ -9,6 +9,7 @@ import { ulid } from "ulid";
 import { Channel } from "phoenix";
 import useServices from "./useServices";
 import { encryptData } from "../crypto";
+import { api } from "../api";
 
 export default function useHandleChatMessage(params: {
   channelRef: React.MutableRefObject<Channel | null>;
@@ -37,12 +38,12 @@ export default function useHandleChatMessage(params: {
       selectedChatRoom.room.id
     }.${selectedChatRoom.room.messageSecret.slice(0, 8)}`;
 
-    const newMessage: Message = {
-      id: ulid(),
+    let newMessage: Message = {
+      msg_id: ulid(),
       creator_name: user.name,
       creator_id: user.id,
       from_room_id,
-      messagePayload: {
+      message_payload: {
         type: "TEXT",
         content: textMessage,
       },
@@ -67,18 +68,33 @@ export default function useHandleChatMessage(params: {
 
     if (!channelRef) return;
 
-    const encryptedMessage = JSON.parse(JSON.stringify(newMessage));
+    let encryptedMessage = JSON.parse(JSON.stringify(newMessage));
 
-    encryptedMessage.messagePayload.iv = iv;
-    encryptedMessage.messagePayload.salt = salt;
+    encryptedMessage.message_payload.iv = iv;
+    encryptedMessage.message_payload.salt = salt;
 
-    if (encryptedMessage.messagePayload.type === "TEXT" && data) {
-      encryptedMessage.messagePayload.content = data;
+    if (encryptedMessage.message_payload.type === "TEXT" && data) {
+      encryptedMessage.message_payload.content = data;
     }
 
+    //! broadcast
     channelRef.push("new_msg", {
       body: encryptedMessage,
     });
+
+    // ! save
+
+    api
+      .post("/chats/create_message", {
+        ...encryptedMessage,
+        expiry: 5,
+      })
+      .then((res) => {
+        console.log("saved message", res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function setSendOnEnter() {

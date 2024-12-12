@@ -3,10 +3,10 @@ import { Message, TextMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import React from "react";
 
-const TextMessageCard = ({ messagePayload, creator_id }: Message) => {
+const TextMessageCard = ({ message_payload, creator_id }: Message) => {
   const user = useAppSelector((state) => state.user.user);
 
-  if (messagePayload.type !== "TEXT") return null;
+  if (message_payload.type !== "TEXT") return null;
 
   return (
     <div
@@ -15,7 +15,7 @@ const TextMessageCard = ({ messagePayload, creator_id }: Message) => {
         user.id === creator_id ? "bg-gradient-to-br" : "bg-gradient-to-bl"
       )}
     >
-      <p className="">{messagePayload.content}</p>
+      <p className="">{message_payload.content}</p>
     </div>
   );
 };

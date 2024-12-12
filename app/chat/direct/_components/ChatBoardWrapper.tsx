@@ -16,13 +16,13 @@ const ChatBoardWrapper = () => {
     <div className="max-w-[900px] mx-auto min-[calc(h-dvh-4rem)] pb-36 flex flex-col gap-y-4">
       {messages.map((item) => (
         <div
-          key={item.id}
+          key={item.msg_id}
           className={cn(
             "flex",
             item.creator_id === user.id ? "justify-end" : "justify-start"
           )}
         >
-          {item.messagePayload.type === "TEXT" && <TextMessageCard {...item} />}
+          {item.message_payload.type === "TEXT" && <TextMessageCard {...item} />}
         </div>
       ))}
     </div>

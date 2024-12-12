@@ -57,16 +57,16 @@ export default function useHandleChatRoom({
 
             const { error, data } = await decryptData(
               JSON.stringify({
-                salt: message.messagePayload.salt,
-                iv: message.messagePayload.iv,
-                data: message.messagePayload.content,
+                salt: message.message_payload.salt,
+                iv: message.message_payload.iv,
+                data: message.message_payload.content,
               }),
               selectedChatRoom.room.messageSecret
             );
 
             if (error) return;
 
-            message.messagePayload.content = data;
+            message.message_payload.content = data;
 
             dispatch(updateMessages(message));
 
